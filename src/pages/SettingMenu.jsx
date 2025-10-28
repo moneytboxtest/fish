@@ -1,193 +1,124 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MenuShell } from '../components/MenuShell.jsx';
+
+const toggleOptions = [
+  {
+    id: 'fullscreen',
+    label: 'Полноэкранный режим',
+    description: 'Автоматически разворачивать игру при запуске',
+  },
+  {
+    id: 'hints',
+    label: 'Подсказки по геймплею',
+    description: 'Показывать советы во время рыбалки',
+  },
+  {
+    id: 'notifications',
+    label: 'Уведомления о событиях',
+    description: 'Получать напоминания о турнирах и заданиях',
+  },
+];
 
 export function SettingMenu() {
-    // Состояния для громкости и музыки
-    const navigate = useNavigate();
-    const [volume, setVolume] = useState(50);
-    const [music, setMusic] = useState(70);
-    const volumeSliderRef = useRef(null);
-    const musicSliderRef = useRef(null);
-    const [activeSlider, setActiveSlider] = useState(null);
+  const navigate = useNavigate();
+  const [volume, setVolume] = useState(60);
+  const [music, setMusic] = useState(70);
+  const [toggles, setToggles] = useState(() => ({
+    fullscreen: true,
+    hints: true,
+    notifications: false,
+  }));
 
-    // Функция для обработки изменения положения шарика
-    const handleSliderChange = (clientX, sliderRef, setValue) => {
-        if (!sliderRef.current) return;
+  const handleToggle = id => {
+    setToggles(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
-        const slider = sliderRef.current;
-        const rect = slider.getBoundingClientRect();
-        const position = Math.max(0, Math.min(clientX - rect.left, rect.width));
-        const newValue = Math.round((position / rect.width) * 100);
-        
-        setValue(newValue);
-    };
+  return (
+    <MenuShell>
+      <div className="flex flex-col gap-8 text-white">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="self-start rounded-full bg-blue-900/80 px-4 py-2 text-sm font-semibold transition hover:bg-blue-800"
+          >
+            ← На базу
+          </button>
+          <div className="text-left sm:text-right">
+            <p className="text-sky-200 text-sm">Настройте игру под себя</p>
+            <h1 className="text-3xl font-bold">Настройки</h1>
+          </div>
+        </header>
 
-    // Обработчики для мыши/тача
-    const handleMouseDown = (e, sliderRef, setValue, sliderType) => {
-        setActiveSlider(sliderType);
-        handleSliderChange(e.clientX, sliderRef, setValue);
-    };
+        <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="flex flex-col gap-4 rounded-3xl border border-white/20 bg-white/10 p-6">
+            <h2 className="text-xl font-semibold">Звук</h2>
+            <div>
+              <div className="flex items-center justify-between text-sm text-sky-100">
+                <span>Громкость интерфейса</span>
+                <span className="font-semibold text-white">{volume}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={volume}
+                onChange={event => setVolume(Number(event.target.value))}
+                className="mt-2 w-full cursor-pointer accent-sky-400"
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between text-sm text-sky-100">
+                <span>Громкость музыки</span>
+                <span className="font-semibold text-white">{music}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={music}
+                onChange={event => setMusic(Number(event.target.value))}
+                className="mt-2 w-full cursor-pointer accent-sky-400"
+              />
+            </div>
+          </div>
 
-    const handleMouseMove = (e) => {
-        if (activeSlider === 'volume') {
-            handleSliderChange(e.clientX, volumeSliderRef, setVolume);
-        } else if (activeSlider === 'music') {
-            handleSliderChange(e.clientX, musicSliderRef, setMusic);
-        }
-    };
-
-    const handleMouseUp = () => {
-        setActiveSlider(null);
-    };
-
-    // Обработчики для touch событий
-    const handleTouchStart = (e, sliderRef, setValue, sliderType) => {
-        setActiveSlider(sliderType);
-        handleSliderChange(e.touches[0].clientX, sliderRef, setValue);
-    };
-
-    const handleTouchMove = (e) => {
-        if (activeSlider === 'volume') {
-            handleSliderChange(e.touches[0].clientX, volumeSliderRef, setVolume);
-        } else if (activeSlider === 'music') {
-            handleSliderChange(e.touches[0].clientX, musicSliderRef, setMusic);
-        }
-    };
-
-    // Глобальные обработчики
-    useEffect(() => {
-        const handleGlobalMouseUp = () => {
-            if (activeSlider) {
-                setActiveSlider(null);
-            }
-        };
-
-        const handleGlobalMouseMove = (e) => {
-            if (activeSlider) {
-                handleMouseMove(e);
-            }
-        };
-
-        const handleGlobalTouchMove = (e) => {
-            if (activeSlider) {
-                handleTouchMove(e);
-            }
-        };
-
-        const handleGlobalTouchEnd = () => {
-            if (activeSlider) {
-                setActiveSlider(null);
-            }
-        };
-
-        document.addEventListener('mousemove', handleGlobalMouseMove);
-        document.addEventListener('mouseup', handleGlobalMouseUp);
-        document.addEventListener('touchmove', handleGlobalTouchMove);
-        document.addEventListener('touchend', handleGlobalTouchEnd);
-
-        return () => {
-            document.removeEventListener('mousemove', handleGlobalMouseMove);
-            document.removeEventListener('mouseup', handleGlobalMouseUp);
-            document.removeEventListener('touchmove', handleGlobalTouchMove);
-            document.removeEventListener('touchend', handleGlobalTouchEnd);
-        };
-    }, [activeSlider]);
-
-    return (
-        <div className="relative">
-            <img 
-                className="h-full"
-                src="background/mbg.jpg" 
-                alt="background"
-            />
-
-            {/* Верхние кнопки */}
-            <button 
-                onClick={() => navigate('/userset')}
-                className="flex rounded-sm justify-start items-center absolute top-1 left-1 gap-2 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-50 h-11">
-                <img
-                    className="pl-2"
-                    src="vite.svg" 
-                    width={40}
-                    height={40}
+          <div className="flex flex-col gap-4 rounded-3xl border border-white/20 bg-white/10 p-6">
+            <h2 className="text-xl font-semibold">Интерфейс</h2>
+            {toggleOptions.map(option => (
+              <label
+                key={option.id}
+                className="flex cursor-pointer items-start justify-between gap-4 rounded-2xl bg-black/30 p-4 transition hover:bg-black/40"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-white">{option.label}</p>
+                  <p className="text-xs text-sky-100">{option.description}</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={toggles[option.id] ?? false}
+                  onChange={() => handleToggle(option.id)}
+                  className="h-5 w-5 rounded border-white/40 bg-transparent accent-sky-400"
                 />
-                <p className="">Player #200</p>
-            </button>
-                    
-            <div className="flex">
-                <button className="absolute rounded-sm top-1 right-1 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-40 h-11">1000 P</button>
-            </div>
+              </label>
+            ))}
+          </div>
+        </section>
 
-            {/* Левая панель кнопок */}
-            <div className="absolute left-4 top-16 flex flex-col gap-3">
-                <button className="rounded-sm bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-40 h-11"></button>
-                <button className="rounded-sm bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-40 h-11"></button>
-                <button className="rounded-sm bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-40 h-11"></button>
-            </div>
-
-            {/* Центральный блок с квадратами и ползунками */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                {/* Верхний квадрат и ползунок громкости */}
-                <div className="flex items-center justify-center mb-8 lg:mb-12">
-                    <div className="rounded-sm bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-14 h-14"></div>
-                    
-                    <div className="w-50 lg:w-60 flex items-center ml-4 lg:ml-6">
-                        <div 
-                            ref={volumeSliderRef}
-                            className="relative rounded-xl bg-gray-400 border-2 border-white h-6 w-full flex items-center cursor-pointer"
-                            onMouseDown={(e) => handleMouseDown(e, volumeSliderRef, setVolume, 'volume')}
-                            onTouchStart={(e) => handleTouchStart(e, volumeSliderRef, setVolume, 'volume')}
-                        >
-                            <div className="absolute left-0 right-0 mx-auto h-1 bg-black w-[95%]"></div>
-                            
-                            <div 
-                                className="absolute bg-blue-800 rounded-full h-7 w-7 -ml-3.5 cursor-pointer transition-transform duration-100 hover:scale-110 active:scale-95"
-                                style={{ left: `${volume}%` }}
-                                onMouseDown={(e) => handleMouseDown(e, volumeSliderRef, setVolume, 'volume')}
-                                onTouchStart={(e) => handleTouchStart(e, volumeSliderRef, setVolume, 'volume')}
-                            ></div>
-                        </div>
-                        
-                        <span className="ml-3 text-white font-bold text-sm min-w-8">
-                            {volume}%
-                        </span>
-                    </div>
-                </div>
-
-                {/* Нижний квадрат и ползунок музыки */}
-                <div className="flex items-center justify-center">
-                    <div className="rounded-sm bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-14 h-14"></div>
-                    
-                    <div className="w-50 lg:w-60 flex items-center ml-4 lg:ml-6">
-                        <div 
-                            ref={musicSliderRef}
-                            className="relative rounded-xl bg-gray-400 border-2 border-white h-6 w-full flex items-center cursor-pointer"
-                            onMouseDown={(e) => handleMouseDown(e, musicSliderRef, setMusic, 'music')}
-                            onTouchStart={(e) => handleTouchStart(e, musicSliderRef, setMusic, 'music')}
-                        >
-                            <div className="absolute left-0 right-0 mx-auto h-1 bg-black w-[95%]"></div>
-                            
-                            <div 
-                                className="absolute bg-blue-800 rounded-full h-7 w-7 -ml-3.5 cursor-pointer transition-transform duration-100 hover:scale-110 active:scale-95"
-                                style={{ left: `${music}%` }}
-                                onMouseDown={(e) => handleMouseDown(e, musicSliderRef, setMusic, 'music')}
-                                onTouchStart={(e) => handleTouchStart(e, musicSliderRef, setMusic, 'music')}
-                            ></div>
-                        </div>
-                        
-                        <span className="ml-3 text-white font-bold text-sm min-w-8">
-                            {music}%
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Нижняя кнопка */}
-            <button 
-                onClick={() => navigate('/')}
-                className="absolute bottom-2 left-4 rounded-4xl bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC] w-12 h-12">
-                {/* Иконка стрелочки */}
-            </button>
-        </div>
-    );
+        <section className="rounded-3xl border border-white/20 bg-white/10 p-6">
+          <h2 className="text-xl font-semibold">Управление</h2>
+          <p className="mt-2 text-sm text-sky-100">
+            Используйте мышь или сенсорное управление для очистки лунки и подсечки рыбы. Клавиши 1-3 переключают быстрые
+            наборы снастей.
+          </p>
+          <div className="mt-4 grid gap-3 text-sm text-sky-100 md:grid-cols-2">
+            <p>␣ Пробел — подсечь рыбу</p>
+            <p>R — обновить снаряжение</p>
+            <p>M — включить/выключить музыку</p>
+            <p>Esc — открыть меню паузы</p>
+          </div>
+        </section>
+      </div>
+    </MenuShell>
+  );
 }

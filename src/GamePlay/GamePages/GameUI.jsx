@@ -295,59 +295,77 @@ export function GameUi() {
         </div>
       </header>
 
-      <main className="relative flex-1 flex flex-col items-center justify-end pb-8">
-        <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
-          <div className="bg-black/30 border border-white/20 rounded-2xl p-4 w-56">
-            <div className="flex items-center gap-2 mb-4">
-              <img src="/snow.png" width={36} height={36} alt="Обморожение" />
-              <p className="font-semibold">Обморожение</p>
+      <main className="flex-1 w-full px-4 py-6">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 lg:flex-row">
+          <aside className="order-2 w-full lg:order-1 lg:w-60">
+            <div className="flex h-full flex-col items-center gap-4 rounded-2xl border border-white/20 bg-black/30 p-4">
+              <div className="flex items-center gap-2">
+                <img src="/snow.png" width={36} height={36} alt="Обморожение" />
+                <p className="font-semibold">Обморожение</p>
+              </div>
+              <div className="relative h-64 w-16 overflow-hidden rounded-2xl border border-white/40 bg-white/20">
+                <div
+                  style={{ height: `${fillPercentage}%` }}
+                  className="absolute bottom-0 w-full rounded-2xl bg-sky-500/90 transition-all duration-500"
+                />
+              </div>
+              <button
+                onClick={handleClearHole}
+                className="w-full rounded-xl bg-blue-900/80 px-3 py-2 text-sm font-semibold transition hover:bg-blue-800"
+              >
+                Очистить лунку
+              </button>
             </div>
-            <div className="bg-white/20 border border-white/40 w-12 h-56 rounded-2xl mx-auto relative overflow-hidden">
-              <div
-                style={{ height: `${fillPercentage}%` }}
-                className="bg-sky-500/90 w-full rounded-2xl absolute bottom-0 transition-all duration-500"
-              />
-            </div>
-            <button
-              onClick={handleClearHole}
-              className="mt-4 w-full bg-blue-900/80 hover:bg-blue-800 transition rounded-xl px-3 py-2 text-sm font-semibold"
-            >
-              Очистить лунку
-            </button>
-          </div>
+          </aside>
 
-          <div className="relative">
-            {isBiting ? (
-              <img className="w-64 md:w-80" src="video/a2.gif" alt="Рыба клюёт" />
-            ) : (
-              <img className="w-64 md:w-80" src="video/road.png" alt="Удочка" />
-            )}
-            <div className="absolute -bottom-12 inset-x-0 flex justify-center">
+          <section className="order-1 flex flex-1 flex-col items-center gap-6 lg:order-2">
+            <div className="relative flex flex-col items-center">
+              {isBiting ? (
+                <img className="w-64 md:w-80" src="video/a2.gif" alt="Рыба клюёт" />
+              ) : (
+                <img className="w-64 md:w-80" src="video/road.png" alt="Удочка" />
+              )}
+              <div className="mt-4 flex flex-col items-center gap-2 text-center text-sm text-sky-100">
+                <p>{isRodCast ? 'Ждите поклёвку и будьте готовы подсечь рыбу.' : 'Закиньте снасть и ждите удачу.'}</p>
+                {isBiting ? <p className="text-green-300">Рыба клюёт! Подсекайте скорее.</p> : null}
+              </div>
               <button
                 onClick={handleFishing}
-                className="bg-blue-900/80 hover:bg-blue-800 transition rounded-2xl px-6 py-3 text-lg font-bold"
+                className="mt-4 rounded-2xl bg-blue-900/80 px-6 py-3 text-lg font-bold transition hover:bg-blue-800"
               >
                 {isRodCast ? 'Подсечь' : 'Забросить'}
               </button>
             </div>
-          </div>
+          </section>
+
+          <aside className="order-3 w-full lg:w-72">
+            <div className="flex h-full flex-col gap-3 rounded-2xl border border-white/20 bg-black/30 p-4">
+              <h2 className="text-lg font-semibold">Рыба в локации</h2>
+              <div className="grid grid-cols-1 gap-3 overflow-y-auto">
+                {location.fishDetails.map(fish => (
+                  <div
+                    key={fish.id}
+                    className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 p-3"
+                  >
+                    <img src={fish.image} alt={fish.name} className="h-14 w-14 flex-shrink-0 object-contain" />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">{fish.name}</p>
+                      <p className="text-xs text-sky-100">{rarityLabels[fish.rarity]}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
 
-        <section className="bg-black/40 w-full max-w-4xl rounded-2xl px-6 py-4">
-          <h2 className="text-lg font-semibold mb-3">Рыба в локации</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {location.fishDetails.map(fish => (
-              <div
-                key={fish.id}
-                className="bg-white/10 border border-white/20 rounded-xl px-3 py-2 flex items-center gap-2"
-              >
-                <img src={fish.image} alt={fish.name} className="w-12 h-12 object-contain" />
-                <div>
-                  <p className="font-semibold text-sm">{fish.name}</p>
-                  <p className="text-xs text-sky-100">{rarityLabels[fish.rarity]}</p>
-                </div>
-              </div>
-            ))}
+        <section className="mx-auto mt-6 w-full max-w-6xl rounded-2xl bg-black/40 px-6 py-4">
+          <h2 className="mb-3 text-lg font-semibold">Советы по локации</h2>
+          <div className="grid gap-3 text-sm text-sky-100 md:grid-cols-2">
+            <p>• Следите за обморожением — очищайте лунку, когда шкала заполняется.</p>
+            <p>• Используйте наживки высокого уровня, чтобы ускорить поклёвку.</p>
+            <p>• Сохраняйте редкую рыбу в садке для турнирных заданий.</p>
+            <p>• Улучшайте снаряжение, чтобы увеличивать шанс трофейного улова.</p>
           </div>
         </section>
       </main>

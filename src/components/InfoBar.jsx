@@ -15,7 +15,7 @@ export function InfoBar() {
       </div>
 
       <div
-        className="pointer-events-none fixed inset-0 -z-20 bg-slate-950/55 backdrop-blur"
+        className="pointer-events-none fixed inset-0 -z-20 bg-slate-950/35 backdrop-blur-sm"
         aria-hidden
       />
 

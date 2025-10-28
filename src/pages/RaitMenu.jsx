@@ -1,64 +1,58 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from 'react-router-dom';
+import { MenuShell } from '../components/MenuShell.jsx';
 
-export function RaitMenu(){
-    const navigate = useNavigate();
-    return (
+const leaderboard = [
+  { id: 1, name: 'Охотник на омаров', score: 15820, catches: 312, rank: 1 },
+  { id: 2, name: 'Player #200', score: 14270, catches: 298, rank: 2 },
+  { id: 3, name: 'HotFish', score: 12640, catches: 274, rank: 3 },
+  { id: 4, name: 'Зимний волк', score: 11890, catches: 251, rank: 4 },
+  { id: 5, name: 'Ледокол', score: 11010, catches: 232, rank: 5 },
+];
 
-        <div className="relative">
-        <img 
-        className="h-full"
-        src="background/mbg.jpg" />
-        
+export function RaitMenu() {
+  const navigate = useNavigate();
 
-        <button className="absolute rounded-sm top-1 right-1 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11">1000 P</button>
-        <button 
-        onClick={() => navigate('/userset')}
-        className="flex rounded-sm justify-start items-center absolute top-1 left-1 gap-2 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-50 h-11">
-            <img
-                className="pl-2"
-                src="vite.svg" 
-                width={40}
-                height={40}
-                
-                />
-                <p className="">Player #200</p>
-        </button>
+  return (
+    <MenuShell>
+      <div className="flex flex-col gap-8 text-white">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="self-start rounded-full bg-blue-900/80 px-4 py-2 text-sm font-semibold transition hover:bg-blue-800"
+          >
+            ← На базу
+          </button>
+          <div className="text-left sm:text-right">
+            <p className="text-sky-200 text-sm">Лучшие рыбаки сезона</p>
+            <h1 className="text-3xl font-bold">Рейтинг игроков</h1>
+          </div>
+        </header>
 
-        <button 
-        onClick={() => navigate('/')}
-        className="absolute bottom-2 left-4 rounded-4xl bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-12 h-12">
-                    {/* Иконка стрелочки */}
-        </button>
-
-        <div className="flex flex-col gap-3 absolute rounded-sm top-16 left-6 ">
-            <button className=" bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11 rounded-sm">Лидеры</button>
-            {/* <button className=" bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11 rounded-sm">Призеры</button>
-            <button className=" bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11 rounded-sm">VIP</button> */}
-        </div>
-        <div className="flex flex-col gap-3 absolute rounded-sm top-16 left-60">
-            <div className="flex flex-col gap-2 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  ronded-sm w-60 h-63 rounded-xl border-2 border-black p-3">
-                <div className="flex rounded-sm pl-1 border-2 border-black">
-                    <p className="font-bold ">1. Охотник на омаров</p>
+        <section className="rounded-3xl border border-white/20 bg-white/10 p-6">
+          <div className="grid grid-cols-1 gap-4">
+            {leaderboard.map(player => (
+              <div
+                key={player.id}
+                className="flex flex-col gap-4 rounded-3xl border border-white/20 bg-black/30 p-4 shadow-lg md:flex-row md:items-center md:justify-between"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/30 text-xl font-bold">
+                    {player.rank}
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold">{player.name}</p>
+                    <p className="text-sm text-sky-100">Поймано рыб: {player.catches}</p>
+                  </div>
                 </div>
-                <div className="flex rounded-sm pl-1 border-2 border-black">
-                    <p className="font-bold ">2. Player</p>
+                <div className="text-right">
+                  <p className="text-sm text-sky-200">Очки сезона</p>
+                  <p className="text-2xl font-bold text-green-300">{player.score.toLocaleString('ru-RU')}</p>
                 </div>
-                <div className="flex rounded-sm pl-1 border-2 border-black">
-                    <p className="font-bold ">3. HotFish</p>
-                </div>
-            </div>
-        </div>
-        
-        
-        
-
-
-
-        </div>
-        
-        
-        
-
-      
-    )
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </MenuShell>
+  );
 }

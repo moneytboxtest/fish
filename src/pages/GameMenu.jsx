@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { InfoBar } from '../components/InfoBar.jsx';
+import { MenuShell } from '../components/MenuShell.jsx';
 import { useGame } from '../context/GameContext.jsx';
 import { locations, locationsMap } from '../data/locations.js';
 import { rarityLabels } from '../data/fish.js';
@@ -37,16 +37,8 @@ export function GameMenu() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <InfoBar />
-      <div
-        className="absolute inset-0 -z-20 bg-cover bg-center"
-        style={{ backgroundImage: "url('/background/mb.jpg')" }}
-        aria-hidden
-      />
-      <div className="absolute inset-0 -z-10 bg-slate-950/70 backdrop-blur-[2px]" aria-hidden />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32 pb-12 flex flex-col gap-8">
+    <MenuShell>
+      <div className="flex flex-col gap-8 text-white">
         <button
           onClick={() => navigate('/')}
           className="self-start bg-blue-900/80 hover:bg-blue-800 transition rounded-full px-4 py-2 text-white font-semibold"
@@ -123,6 +115,6 @@ export function GameMenu() {
           </section>
         </div>
       </div>
-    </div>
+    </MenuShell>
   );
 }

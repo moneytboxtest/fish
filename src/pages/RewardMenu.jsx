@@ -1,204 +1,170 @@
-import { useState } from "react";
-import { InfoBar } from "../components/InfoBar";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MenuShell } from '../components/MenuShell.jsx';
+
+const rewardsList = [
+  {
+    id: 1,
+    name: 'Бонус за регистрацию',
+    reward: '100 руб + Деревянная удочка',
+    image: 'icon/6.png',
+    description: 'Спасибо за регистрацию в игре!',
+    canClaim: true,
+    requirement: null,
+  },
+  {
+    id: 2,
+    name: 'Подписка на канал',
+    reward: '200 руб + Наживка',
+    image: 'icon/6.png',
+    description: 'Подпишитесь на наш канал и получите награду',
+    canClaim: true,
+    requirement: null,
+  },
+  {
+    id: 3,
+    name: 'Лайк в группе VK',
+    reward: '50 руб',
+    image: 'icon/6.png',
+    description: 'Поставьте лайк нашей группе ВКонтакте',
+    canClaim: true,
+    requirement: null,
+  },
+  {
+    id: 4,
+    name: 'Приведи друга',
+    reward: '300 руб + Крючки',
+    image: 'icon/6.png',
+    description: 'Пригласите друга в игру',
+    canClaim: false,
+    requirement: 'Друг должен достичь 5 уровня',
+  },
+  {
+    id: 5,
+    name: 'Ежедневный вход',
+    reward: '25 руб',
+    image: 'icon/6.png',
+    description: 'Ежедневная награда за вход в игру',
+    canClaim: false,
+    requirement: 'Зайдите в игру завтра',
+  },
+  {
+    id: 6,
+    name: 'Первая покупка',
+    reward: '150 руб + Леска',
+    image: 'icon/6.png',
+    description: 'Совершите первую покупку в магазине',
+    canClaim: false,
+    requirement: 'Купите любой предмет в магазине',
+  },
+  {
+    id: 7,
+    name: 'Оценка в магазине',
+    reward: '75 руб',
+    image: 'icon/6.png',
+    description: 'Оцените игру в магазине приложений',
+    canClaim: true,
+    requirement: null,
+  },
+  {
+    id: 8,
+    name: 'Поделиться игрой',
+    reward: '100 руб',
+    image: 'icon/6.png',
+    description: 'Поделитесь игрой в социальных сетях',
+    canClaim: true,
+    requirement: null,
+  },
+];
 
 export function RewardsMenu() {
-    const [claimedRewards, setClaimedRewards] = useState(new Set());
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [claimedRewards, setClaimedRewards] = useState(() => new Set());
 
+  const rewards = useMemo(
+    () =>
+      rewardsList.map(reward => ({
+        ...reward,
+        claimed: claimedRewards.has(reward.id),
+      })),
+    [claimedRewards],
+  );
 
-    // Простой список наград
-    const rewards = [
-        { 
-            id: 1, 
-            name: "Бонус за регистрацию", 
-            reward: "100 руб + Деревянная удочка", 
-            image: "icon/6.png",
-            description: "Спасибо за регистрацию в игре!",
-            claimed: false,
-            canClaim: true
-        },
-        { 
-            id: 2, 
-            name: "Подписка на канал", 
-            reward: "200 руб + Наживка", 
-            image: "icon/6.png",
-            description: "Подпишитесь на наш канал и получите награду",
-            claimed: false,
-            canClaim: true
-        },
-        { 
-            id: 3, 
-            name: "Лайк в группе VK", 
-            reward: "50 руб", 
-            image: "icon/6.png",
-            description: "Поставьте лайк нашей группе ВКонтакте",
-            claimed: false,
-            canClaim: true
-        },
-        { 
-            id: 4, 
-            name: "Приведи друга", 
-            reward: "300 руб + Крючки", 
-            image: "icon/6.png",
-            description: "Пригласите друга в игру",
-            claimed: false,
-            canClaim: false,
-            requirement: "Друг должен достичь 5 уровня"
-        },
-        { 
-            id: 5, 
-            name: "Ежедневный вход", 
-            reward: "25 руб", 
-            image: "icon/6.png",
-            description: "Ежедневная награда за вход в игру",
-            claimed: true,
-            canClaim: false
-        },
-        { 
-            id: 6, 
-            name: "Первая покупка", 
-            reward: "150 руб + Леска", 
-            image: "icon/6.png",
-            description: "Совершите первую покупку в магазине",
-            claimed: false,
-            canClaim: false,
-            requirement: "Купите любой предмет в магазине"
-        },
-        { 
-            id: 7, 
-            name: "Оценка в магазине", 
-            reward: "75 руб", 
-            image: "icon/6.png",
-            description: "Оцените игру в магазине приложений",
-            claimed: false,
-            canClaim: true
-        },
-        { 
-            id: 8, 
-            name: "Поделиться игрой", 
-            reward: "100 руб", 
-            image: "icon/6.png",
-            description: "Поделитесь игрой в социальных сетях",
-            claimed: false,
-            canClaim: true
-        }
-    ];
+  const handleClaimReward = reward => {
+    if (!reward.canClaim || reward.claimed) {
+      return;
+    }
+    setClaimedRewards(prev => new Set(prev).add(reward.id));
+    window.alert(`Получена награда: ${reward.reward}`);
+  };
 
-    const handleClaimReward = (reward) => {
-        if (reward.canClaim && !reward.claimed) {
-            setClaimedRewards(prev => new Set([...prev, reward.id]));
-            alert(`Получена награда: ${reward.reward}`);
-        }
-    };
+  return (
+    <MenuShell>
+      <div className="flex flex-col gap-8 text-white">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="self-start rounded-full bg-blue-900/80 px-4 py-2 text-sm font-semibold transition hover:bg-blue-800"
+          >
+            ← На базу
+          </button>
+          <div className="text-left sm:text-right">
+            <p className="text-sky-200 text-sm">Забирайте бонусы за активность</p>
+            <h1 className="text-3xl font-bold">Награды</h1>
+          </div>
+        </header>
 
-    const isRewardClaimed = (reward) => {
-        return claimedRewards.has(reward.id) || reward.claimed;
-    };
+        <section className="rounded-3xl border border-white/20 bg-white/10 p-6">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {rewards.map(reward => (
+              <div
+                key={reward.id}
+                className={`flex flex-col gap-4 rounded-3xl border border-white/20 bg-black/30 p-4 transition ${
+                  reward.claimed ? 'opacity-75 ring-2 ring-green-400/50' : ''
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
+                    <img src={reward.image} alt={reward.name} className="h-12 w-12 object-contain" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-lg font-semibold">{reward.name}</p>
+                    <p className="text-sm text-sky-100">{reward.description}</p>
+                  </div>
+                </div>
 
-    return (
-        <div className="relative ">
-            {/* Фон */}
-            <InfoBar />
+                <div className="rounded-2xl bg-amber-100/80 px-4 py-2 text-sm font-semibold text-amber-800">
+                  🎁 {reward.reward}
+                </div>
 
-            {/* Кнопка "На базу" слева */}
-            <div className="absolute bottom-30 left-10 z-10">
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => navigate('/')}
+                {reward.requirement && !reward.canClaim && !reward.claimed && (
+                  <div className="rounded-2xl bg-orange-100/80 px-3 py-2 text-sm text-orange-800">
+                    📋 {reward.requirement}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => handleClaimReward(reward)}
+                  disabled={!reward.canClaim || reward.claimed}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                    reward.claimed
+                      ? 'bg-gray-400 text-gray-700'
+                      : reward.canClaim
+                        ? 'bg-green-500 text-gray-900 hover:bg-green-400'
+                        : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
                 >
-                    <img className="object-cover" src="background/boll.png" width={90} height={80} />
-                    <img className="absolute top-2" src="иконки/back.png" width={50} />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">На базу</p>
-                </div>
-            </div>
-
-            {/* Главное окно наград */}
-            <div className="absolute top-20 right-20 z-10">
-                <div className="relative">
-                    <img src="43.png" width={650} alt="rewards window" />
-                    
-                    <div className="absolute top-12 left-8 right-8 bottom-12">
-                        <div className="h-full overflow-y-auto">
-                            <div className="flex justify-center items-center mb-6">
-                                <h2 className="text-2xl font-bold text-gray-800">🎁 Награды</h2>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 gap-3 max-h-[450px] overflow-y-auto pr-2">
-                                {rewards.map((reward) => {
-                                    const claimed = isRewardClaimed(reward);
-                                    return (
-                                        <div 
-                                            key={reward.id} 
-                                            className={`rounded-lg p-4 shadow border-2 ${
-                                                claimed 
-                                                    ? 'bg-gray-200/60 border-gray-400' 
-                                                    : reward.canClaim 
-                                                        ? 'bg-green-100/60 border-green-500' 
-                                                        : 'bg-white/40 border-orange-400'
-                                            }`}
-                                        >
-                                            <div className="flex items-start gap-4">
-                                                <div className="w-16 h-16 border-2 rounded-lg flex items-center justify-center flex-shrink-0 bg-white">
-                                                    <img 
-                                                        src={reward.image} 
-                                                        alt={reward.name}
-                                                        className="w-16 h-16 object-contain"
-                                                    />
-                                                </div>
-                                                
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-start justify-between mb-2">
-                                                        <h3 className="font-bold text-gray-800 text-base">
-                                                            {reward.name}
-                                                            {claimed && (
-                                                                <span className="ml-2 text-green-600 text-sm">✓ Получено</span>
-                                                            )}
-                                                        </h3>
-                                                    </div>
-                                                    
-                                                    <p className="text-sm text-gray-600 mb-3">
-                                                        {reward.description}
-                                                    </p>
-                                                    
-                                                    <div className="bg-yellow-100 font-bold px-3 py-2 rounded-lg text-yellow-800 text-sm mb-3 inline-block">
-                                                        🎁 {reward.reward}
-                                                    </div>
-                                                    
-                                                    {reward.requirement && !reward.canClaim && (
-                                                        <div className="text-sm text-orange-600 mb-3 bg-orange-50 p-2 rounded">
-                                                            📋 {reward.requirement}
-                                                        </div>
-                                                    )}
-                                                    
-                                                    <button 
-                                                        onClick={() => handleClaimReward(reward)}
-                                                        disabled={!reward.canClaim || claimed}
-                                                        className={`w-full py-2 px-4 rounded-lg text-sm font-semibold transition-colors ${
-                                                            claimed
-                                                                ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                                                                : reward.canClaim
-                                                                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                                                                    : 'bg-orange-300 text-orange-700 cursor-not-allowed'
-                                                        }`}
-                                                    >
-                                                        {claimed 
-                                                            ? '✓ Награда получена' 
-                                                            : reward.canClaim 
-                                                                ? '🎁 Получить награду' 
-                                                                : '⏳ Требования не выполнены'
-                                                        }
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+                  {reward.claimed
+                    ? '✓ Награда получена'
+                    : reward.canClaim
+                      ? 'Получить награду'
+                      : 'Требования не выполнены'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </MenuShell>
+  );
 }

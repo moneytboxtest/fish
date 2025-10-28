@@ -1,271 +1,236 @@
-import { useState } from "react";
-import { InfoBar } from "../components/InfoBar";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MenuShell } from '../components/MenuShell.jsx';
+
+const questCategories = {
+  daily: {
+    title: 'Ежедневные квесты',
+    quests: [
+      {
+        id: 1,
+        name: 'Выловить рыбу',
+        description: 'Поймайте любую рыбу',
+        progress: 10,
+        maxProgress: 10,
+        reward: '50 руб + опыт',
+        completed: true,
+        icon: '🎣',
+      },
+      {
+        id: 2,
+        name: 'Ремонт снастей',
+        description: 'Отремонтируйте снасти',
+        progress: 1,
+        maxProgress: 3,
+        reward: '25 руб',
+        completed: false,
+        icon: '🔧',
+      },
+      {
+        id: 3,
+        name: 'Участвовать в турнире',
+        description: 'Примите участие в любом турнире',
+        progress: 1,
+        maxProgress: 3,
+        reward: '100 руб + крючки',
+        completed: false,
+        icon: '🏆',
+      },
+      {
+        id: 4,
+        name: 'Совершить покупку',
+        description: 'Купите что-нибудь в магазине',
+        progress: 1,
+        maxProgress: 1,
+        reward: '30 руб',
+        completed: true,
+        icon: '🛒',
+      },
+    ],
+  },
+  weekly: {
+    title: 'Еженедельные квесты',
+    quests: [
+      {
+        id: 1,
+        name: 'Наполнить садок',
+        description: 'Поймайте 25 рыб за неделю',
+        progress: 11,
+        maxProgress: 25,
+        reward: '200 руб + наживка',
+        completed: false,
+        icon: '🐟',
+      },
+      {
+        id: 2,
+        name: 'Поделиться уловом',
+        description: 'Поделитесь фото улова в соцсетях',
+        progress: 1,
+        maxProgress: 3,
+        reward: '150 руб',
+        completed: false,
+        icon: '📸',
+      },
+      {
+        id: 3,
+        name: 'Исследовать локации',
+        description: 'Посетите 5 разных мест для рыбалки',
+        progress: 2,
+        maxProgress: 5,
+        reward: '300 руб + удочка',
+        completed: false,
+        icon: '🗺️',
+      },
+    ],
+  },
+  seasonal: {
+    title: 'Сезонные квесты',
+    quests: [
+      {
+        id: 1,
+        name: 'Зимний рыбак',
+        description: 'Поймайте 100 рыб зимой',
+        progress: 45,
+        maxProgress: 100,
+        reward: '1000 руб + снегоход',
+        completed: false,
+        icon: '❄️',
+      },
+      {
+        id: 2,
+        name: 'Ледяной трофей',
+        description: 'Поймайте редкую зимнюю рыбу',
+        progress: 0,
+        maxProgress: 1,
+        reward: '500 руб + леска Premium',
+        completed: false,
+        icon: '🏅',
+      },
+      {
+        id: 3,
+        name: 'Мастер подледной ловли',
+        description: 'Используйте все виды зимних снастей',
+        progress: 2,
+        maxProgress: 4,
+        reward: '800 руб + крючки тройные',
+        completed: false,
+        icon: '🎯',
+      },
+    ],
+  },
+};
 
 export function QuestMenu() {
-    const [selectedCategory, setSelectedCategory] = useState('daily');
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [selectedCategoryKey, setSelectedCategoryKey] = useState('daily');
 
-    // Данные квестов по категориям
-    const questCategories = {
-        daily: {
-            title: "Ежедневные квесты",
-            quests: [
-                {
-                    id: 1,
-                    name: "Выловить рыбу",
-                    description: "Поймайте любую рыбу",
-                    progress: 10,
-                    maxProgress: 10,
-                    reward: "50 руб + опыт",
-                    completed: true,
-                    icon: "🎣"
-                },
-                {
-                    id: 2,
-                    name: "Ремонт снастей",
-                    description: "Отремонтируйте снасти",
-                    progress: 1,
-                    maxProgress: 3,
-                    reward: "25 руб",
-                    completed: false,
-                    icon: "🔧"
-                },
-                {
-                    id: 3,
-                    name: "Участвовать в турнире",
-                    description: "Примите участие в любом турнире",
-                    progress: 1,
-                    maxProgress: 3,
-                    reward: "100 руб + крючки",
-                    completed: false,
-                    icon: "🏆"
-                },
-                {
-                    id: 4,
-                    name: "Совершить покупку",
-                    description: "Купите что-нибудь в магазине",
-                    progress: 1,
-                    maxProgress: 1,
-                    reward: "30 руб",
-                    completed: true,
-                    icon: "🛒"
-                }
-            ]
-        },
-        weekly: {
-            title: "Еженедельные квесты",
-            quests: [
-                {
-                    id: 1,
-                    name: "Наполнить садок",
-                    description: "Поймайте 25 рыб за неделю",
-                    progress: 11,
-                    maxProgress: 25,
-                    reward: "200 руб + наживка",
-                    completed: false,
-                    icon: "🐟"
-                },
-                {
-                    id: 2,
-                    name: "Поделиться уловом",
-                    description: "Поделитесь фото улова в соцсетях",
-                    progress: 1,
-                    maxProgress: 3,
-                    reward: "150 руб",
-                    completed: false,
-                    icon: "📸"
-                },
-                {
-                    id: 3,
-                    name: "Исследовать локации",
-                    description: "Посетите 5 разных мест для рыбалки",
-                    progress: 2,
-                    maxProgress: 5,
-                    reward: "300 руб + удочка",
-                    completed: false,
-                    icon: "🗺️"
-                }
-            ]
-        },
-        seasonal: {
-            title: "Сезонные квесты",
-            quests: [
-                {
-                    id: 1,
-                    name: "Зимний рыбак",
-                    description: "Поймайте 100 рыб зимой",
-                    progress: 45,
-                    maxProgress: 100,
-                    reward: "1000 руб + снегоход",
-                    completed: false,
-                    icon: "❄️"
-                },
-                {
-                    id: 2,
-                    name: "Ледяной трофей",
-                    description: "Поймайте редкую зимнюю рыбу",
-                    progress: 0,
-                    maxProgress: 1,
-                    reward: "500 руб + леска Premium",
-                    completed: false,
-                    icon: "🏅"
-                },
-                {
-                    id: 3,
-                    name: "Мастер подледной ловли",
-                    description: "Используйте все виды зимних снастей",
-                    progress: 2,
-                    maxProgress: 4,
-                    reward: "800 руб + крючки тройные",
-                    completed: false,
-                    icon: "🎯"
-                }
-            ]
-        }
-    };
+  const selectedCategory = useMemo(
+    () => questCategories[selectedCategoryKey] ?? questCategories.daily,
+    [selectedCategoryKey],
+  );
 
-    const handleCategorySelect = (categoryKey) => {
-        setSelectedCategory(categoryKey);
-    };
+  const handleClaimQuest = quest => {
+    if (quest.completed) {
+      window.alert(`Получена награда: ${quest.reward}`);
+    } else {
+      window.alert('Квест ещё не выполнен!');
+    }
+  };
 
-    const handleClaimQuest = (quest) => {
-        if (quest.completed) {
-            alert(`Получена награда: ${quest.reward}`);
-        } else {
-            alert("Квест ещё не выполнен!");
-        }
-    };
+  return (
+    <MenuShell>
+      <div className="flex flex-col gap-8 text-white">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="self-start rounded-full bg-blue-900/80 px-4 py-2 text-sm font-semibold transition hover:bg-blue-800"
+          >
+            ← На базу
+          </button>
+          <div className="text-left sm:text-right">
+            <p className="text-sky-200 text-sm">Выберите задания и заработайте награды</p>
+            <h1 className="text-3xl font-bold">Меню квестов</h1>
+          </div>
+        </header>
 
-    return (
-        <div className="relative">
-            {/* Фон */}
-            <InfoBar />
+        <div className="grid grid-cols-1 gap-6 pb-10 lg:grid-cols-[220px_1fr]">
+          <aside className="flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/10 p-4">
+            {Object.entries(questCategories).map(([key, category]) => (
+              <button
+                key={key}
+                onClick={() => setSelectedCategoryKey(key)}
+                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
+                  key === selectedCategoryKey
+                    ? 'bg-blue-600/90 shadow-lg'
+                    : 'bg-blue-900/50 hover:bg-blue-800/80'
+                }`}
+              >
+                {category.title}
+              </button>
+            ))}
+          </aside>
 
-            {/* Кнопки категорий слева */}
-            <div className="absolute bottom-30 left-10 z-10 flex flex-col gap-2">
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('daily')}
-                >
-                    <img className="object-cover" src="background/boll.png" width={90} height={80} />
-                    <div className="absolute top-3 text-2xl">📅</div>
-                    <p className="absolute bottom-[30%] text-white text-[12px] font-bold text-center">Ежедневные</p>
-                </div>
+          <section className="flex flex-col gap-4 rounded-3xl border border-white/20 bg-white/10 p-6">
+            <h2 className="text-2xl font-bold">{selectedCategory.title}</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {selectedCategory.quests.map(quest => {
+                const progressPercentage = Math.round(
+                  (quest.progress / quest.maxProgress) * 100,
+                );
 
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('weekly')}
-                >
-                    <img className="object-cover" src="background/boll.png" width={90} height={80} />
-                    <div className="absolute top-3 text-2xl">📊</div>
-                    <p className="absolute bottom-[30%] text-white text-[12px] font-bold text-center">Еженедельные</p>
-                </div>
-
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('seasonal')}
-                >
-                    <img className="object-cover" src="background/boll.png" width={90} height={80} />
-                    <div className="absolute top-3 text-2xl">🌟</div>
-                    <p className="absolute bottom-[30%] text-white text-[12px] font-bold text-center">Сезонные</p>
-                </div>
-
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => navigate('/')}
-                >
-                    <img className="object-cover" src="background/boll.png" width={90} height={80} />
-                    <img className="absolute top-2" src="иконки/back.png" width={50} />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">На базу</p>
-                </div>
-            </div>
-
-            {/* Главное окно квестов */}
-            <div className="absolute top-20 right-20 z-10">
-                <div className="relative">
-                    <img src="43.png" width={650} alt="quests window" />
-                    
-                    <div className="absolute top-12 left-8 right-8 bottom-12">
-                        <div className="h-full overflow-y-auto">
-                            <div className="flex justify-center items-center mb-6">
-                                <h2 className="text-2xl font-bold text-gray-800">
-                                    {questCategories[selectedCategory]?.title}
-                                </h2>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 gap-3 max-h-[450px] overflow-y-auto pr-2">
-                                {questCategories[selectedCategory]?.quests.map((quest) => (
-                                    <div 
-                                        key={quest.id} 
-                                        className={`rounded-lg p-4 shadow border-2 ${
-                                            quest.completed 
-                                                ? 'bg-green-100/60 border-green-500' 
-                                                : 'bg-white/40 border-blue-400'
-                                        }`}
-                                    >
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-16 h-16 border-2 rounded-lg flex items-center justify-center flex-shrink-0 bg-white text-2xl">
-                                                {quest.icon}
-                                            </div>
-                                            
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <h3 className="font-bold text-gray-800 text-base">
-                                                        {quest.name}
-                                                        {quest.completed && (
-                                                            <span className="ml-2 text-green-600 text-sm">✓ Выполнено</span>
-                                                        )}
-                                                    </h3>
-                                                </div>
-                                                
-                                                <p className="text-sm text-gray-600 mb-3">
-                                                    {quest.description}
-                                                </p>
-                                                
-                                                {/* Прогресс бар */}
-                                                <div className="mb-3">
-                                                    <div className="flex justify-between text-sm mb-1">
-                                                        <span>Прогресс:</span>
-                                                        <span className="font-bold">{quest.progress}/{quest.maxProgress}</span>
-                                                    </div>
-                                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                                        <div 
-                                                            className={`h-2 rounded-full ${
-                                                                quest.completed ? 'bg-green-500' : 'bg-blue-500'
-                                                            }`}
-                                                            style={{ width: `${(quest.progress / quest.maxProgress) * 100}%` }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div className="bg-yellow-100 font-bold px-3 py-2 rounded-lg text-yellow-800 text-sm mb-3 inline-block">
-                                                    🎁 {quest.reward}
-                                                </div>
-                                                
-                                                <button 
-                                                    onClick={() => handleClaimQuest(quest)}
-                                                    disabled={!quest.completed}
-                                                    className={`w-full py-2 px-4 rounded-lg text-sm font-semibold transition-colors ${
-                                                        quest.completed
-                                                            ? 'bg-green-500 hover:bg-green-600 text-white'
-                                                            : 'bg-blue-300 text-blue-700 cursor-not-allowed'
-                                                    }`}
-                                                >
-                                                    {quest.completed 
-                                                        ? '🎁 Забрать награду' 
-                                                        : '⏳ В процессе'
-                                                    }
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                return (
+                  <div
+                    key={quest.id}
+                    className={`flex flex-col gap-3 rounded-3xl border border-white/20 bg-black/30 p-4 shadow-lg transition ${
+                      quest.completed ? 'ring-2 ring-green-400' : ''
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-2xl">
+                        {quest.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-lg font-semibold">{quest.name}</p>
+                        <p className="text-sm text-sky-100">{quest.description}</p>
+                      </div>
                     </div>
-                </div>
+
+                    <div>
+                      <div className="mb-1 flex items-center justify-between text-xs text-sky-100">
+                        <span>Прогресс</span>
+                        <span>
+                          {quest.progress}/{quest.maxProgress}
+                        </span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-white/10">
+                        <div
+                          className={`h-full rounded-full ${
+                            quest.completed ? 'bg-green-500' : 'bg-blue-500'
+                          }`}
+                          style={{ width: `${progressPercentage}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="text-sm font-semibold text-amber-300">🎁 {quest.reward}</div>
+
+                    <button
+                      onClick={() => handleClaimQuest(quest)}
+                      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                        quest.completed
+                          ? 'bg-green-500 text-gray-900 hover:bg-green-400'
+                          : 'bg-white/20 text-white hover:bg-white/30'
+                      }`}
+                    >
+                      {quest.completed ? 'Забрать награду' : `${progressPercentage}% выполнено`}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
+          </section>
         </div>
-    );
+      </div>
+    </MenuShell>
+  );
 }

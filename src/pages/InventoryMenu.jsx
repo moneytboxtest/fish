@@ -1,341 +1,171 @@
-import { useState } from "react";
-import { InfoBar } from "../components/InfoBar";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MenuShell } from '../components/MenuShell.jsx';
+import { useGame } from '../context/GameContext.jsx';
+import { shopCategories } from '../data/shopItems.js';
+
+function getEquippedSummary(equippedIds, categories) {
+  const equippedNames = categories
+    .map(category => {
+      const equippedId = equippedIds[category.id];
+      if (!equippedId) {
+        return null;
+      }
+      const item = category.items.find(candidate => candidate.id === equippedId);
+      return item ? item.name : null;
+    })
+    .filter(Boolean);
+
+  if (!equippedNames.length) {
+    return 'Ничего не экипировано';
+  }
+  return equippedNames.join(', ');
+}
 
 export function InventoryMenu() {
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const navigate = useNavigate();
-    const [equippedItems, setEquippedItems] = useState({
-        udochki: null,
-        nazivka: null,
-        leski: null,
-        kruchki: null,
-        snegohody: null
+  const navigate = useNavigate();
+  const { ownedEquipment } = useGame();
+  const [selectedCategoryId, setSelectedCategoryId] = useState(shopCategories[0]?.id ?? 'rods');
+  const [equippedIds, setEquippedIds] = useState({});
+
+  const ownedIds = useMemo(() => new Set(ownedEquipment.map(item => item.id)), [ownedEquipment]);
+
+  const categories = useMemo(
+    () =>
+      shopCategories.map(category => ({
+        ...category,
+        items: category.items.map(item => ({
+          ...item,
+          isOwned: ownedIds.has(item.id),
+          isEquipped: equippedIds[category.id] === item.id,
+        })),
+      })),
+    [equippedIds, ownedIds],
+  );
+
+  const selectedCategory =
+    categories.find(category => category.id === selectedCategoryId) ?? categories[0];
+
+  const equippedSummary = useMemo(
+    () => getEquippedSummary(equippedIds, categories),
+    [equippedIds, categories],
+  );
+
+  const handleEquip = (categoryId, itemId, isOwned) => {
+    if (!isOwned) {
+      return;
+    }
+    setEquippedIds(prev => ({ ...prev, [categoryId]: itemId }));
+  };
+
+  const handleUnequip = categoryId => {
+    setEquippedIds(prev => {
+      const next = { ...prev };
+      delete next[categoryId];
+      return next;
     });
-    
-    const handleNavigateHome = () => {
-        console.log('Navigating to home');
-        // Здесь будет навигация на главную
-    };
+  };
 
-    const handleNavigateUserSet = () => {
-        console.log('Navigating to user settings');
-        // Здесь будет навигация в настройки
-    };
+  return (
+    <MenuShell>
+      <div className="flex flex-col gap-8 text-white">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="self-start rounded-full bg-blue-900/80 px-4 py-2 text-sm font-semibold transition hover:bg-blue-800"
+          >
+            ← На базу
+          </button>
+          <div className="rounded-2xl bg-white/10 px-4 py-3 text-sm shadow-lg backdrop-blur">
+            <p className="text-sky-200">Экипировано</p>
+            <p className="text-base font-semibold">{equippedSummary}</p>
+          </div>
+        </header>
 
-    // Предметы в инвентаре (здесь будут храниться купленные предметы)
-    const inventory = {
-        udochki: [
-            { 
-                id: 1, 
-                name: "Деревянная удочка", 
-                image: "удочки/1.png",
-                rareChance: 5,
-                description: "Простая удочка для начинающих",
-                equipped: false
-            },
-            { 
-                id: 2, 
-                name: "Углепластиковая удочка", 
-                image: "удочки/2.png",
-                rareChance: 12,
-                description: "Удочка среднего класса",
-                equipped: false
-            }
-        ],
-        nazivka: [
-            { 
-                id: 1, 
-                name: "Черви (10шт)", 
-                image: "наж/1.png",
-                rareChance: 3,
-                description: "Универсальная наживка",
-                equipped: false
-            }
-        ],
-        leski: [
-            { 
-                id: 1, 
-                name: "Монофильная леска", 
-                image: "катушки/1.png",
-                rareChance: 2,
-                description: "Стандартная леска",
-                equipped: false
-            }
-        ],
-        kruchki: [
-            { 
-                id: 1, 
-                name: "Крючки №6 (10шт)", 
-                image: "крючки/1.png",
-                rareChance: 1,
-                description: "Крючки для мелкой рыбы",
-                equipped: false
-            }
-        ],
-        snegohody: []
-    };
+        <div className="grid grid-cols-1 gap-6 pb-10 lg:grid-cols-[240px_1fr]">
+          <aside className="flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/10 p-4">
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategoryId(category.id)}
+                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
+                  selectedCategoryId === category.id
+                    ? 'bg-blue-600/90 shadow-lg'
+                    : 'bg-blue-900/50 hover:bg-blue-800/80'
+                }`}
+              >
+                {category.title}
+              </button>
+            ))}
+          </aside>
 
-    const categories = {
-        udochki: { title: "Удочки" },
-        nazivka: { title: "Наживки" },
-        leski: { title: "Лески" },
-        kruchki: { title: "Крючки" },
-        snegohody: { title: "Снегоходы" }
-    };
-
-    const handleCategorySelect = (categoryKey) => {
-        setSelectedCategory(categoryKey);
-    };
-
-    const handleEquipItem = (item, category) => {
-        // Снимаем текущий экипированный предмет в этой категории
-        if (equippedItems[category]) {
-            const currentEquipped = inventory[category].find(i => i.id === equippedItems[category]);
-            if (currentEquipped) {
-                currentEquipped.equipped = false;
-            }
-        }
-
-        // Экипируем новый предмет
-        item.equipped = true;
-        setEquippedItems(prev => ({
-            ...prev,
-            [category]: item.id
-        }));
-    };
-
-    const handleUnequipItem = (item, category) => {
-        item.equipped = false;
-        setEquippedItems(prev => ({
-            ...prev,
-            [category]: null
-        }));
-    };
-
-    const handleBackToCategories = () => {
-        setSelectedCategory(null);
-    };
-
-    return (
-        <div className="relative ">
-           <InfoBar />
-
-
-
-            {/* Кнопки категорий слева */}
-            <div className="absolute bottom-30 grid grid-cols-2 left-10 gap-2 z-10">
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('udochki')}
+          <section className="flex flex-col gap-5 rounded-3xl border border-white/20 bg-white/10 p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{selectedCategory?.title}</h2>
+                <p className="text-sm text-sky-100">
+                  Выберите предмет, чтобы экипировать его перед выходом на лёд.
+                </p>
+              </div>
+              {selectedCategory && equippedIds[selectedCategory.id] && (
+                <button
+                  onClick={() => handleUnequip(selectedCategory.id)}
+                  className="rounded-full bg-white/20 px-4 py-2 text-sm font-semibold transition hover:bg-white/30"
                 >
-                    <img
-                        className="object-cover"
-                        src="background/boll.png"
-                        width={90}
-                        height={80}
-                    />
-                    <img
-                        className="absolute top-4"
-                        src="удочки/3.png"
-                        width={70} 
-                    />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Удочки</p>
-                </div>
-
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('nazivka')}
-                >
-                    <img
-                        className="object-cover"
-                        src="background/boll.png"
-                        width={90}
-                        height={80}
-                    />
-                    <img
-                        className="absolute top-3"
-                        src="наж/2.png"
-                        width={70} 
-                    />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Наживки</p>
-                </div>
-
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('leski')}
-                >
-                    <img
-                        className="object-cover"
-                        src="background/boll.png"
-                        width={90}
-                        height={80}
-                    />
-                    <img
-                        className="absolute"
-                        src="катушки/4.png"
-                        width={70} 
-                    />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Лески</p>
-                </div>
-
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('kruchki')}
-                >
-                    <img
-                        className="object-cover"
-                        src="background/boll.png"
-                        width={90}
-                        height={80}
-                    />
-                    <img
-                        className="absolute top-1"
-                        src="крючки/5.png"
-                        width={35} 
-                    />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Крючки</p>
-                </div>
-
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => handleCategorySelect('snegohody')}
-                >
-                    <img
-                        className="object-cover"
-                        src="background/boll.png"
-                        width={90}
-                        height={80}
-                    />
-                    <img
-                        className="absolute top-2"
-                        src="снегоходы/4.png"
-                        width={70} 
-                    />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Снегоходы</p>
-                </div>
-
-                <div 
-                    className="relative flex flex-col items-center cursor-pointer"
-                    onClick={() => navigate('/')}
-                >
-                    <img
-                        className="object-cover"
-                        src="background/boll.png"
-                        width={90}
-                        height={80}
-                    />
-                    <img
-                        className="absolute top-2"
-                        src="иконки/back.png"
-                        width={50} 
-                    />
-                    <p className="absolute bottom-[30%] text-white text-[14px] font-bold">На базу</p>
-                </div>
+                  Снять экипировку
+                </button>
+              )}
             </div>
 
-            {/* Главное окно инвентаря */}
-            <div className="absolute top-20 right-20 z-10">
-                <div className="relative">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {selectedCategory?.items.map(item => (
+                <div
+                  key={item.id}
+                  className={`flex flex-col gap-4 rounded-3xl border border-white/20 bg-black/30 p-4 transition ${
+                    item.isEquipped ? 'ring-2 ring-sky-400' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
                     <img
-                        src="43.png"
-                        width={650}
-                        alt="inventory window"
+                      src={item.image}
+                      alt={item.name}
+                      className="h-20 w-20 flex-shrink-0 object-contain"
                     />
-                    
-                    <div className="absolute top-12 left-8 right-8 bottom-12">
-                        {!selectedCategory ? (
-                            <div className="flex flex-col items-center justify-center h-full text-center">
-                                <h2 className="text-2xl font-bold text-gray-800 mb-4">Ваш инвентарь</h2>
-                                <p className="text-white font-bold mb-4">Выберите категорию слева</p>
-                                <div className="mt-8">
-                                    <h3 className="text-lg font-bold text-gray-800 mb-4">Экипированные предметы:</h3>
-                                    <div className="grid grid-cols-2 gap-4 text-sm">
-                                        {Object.entries(equippedItems).map(([category, itemId]) => {
-                                            const item = itemId ? inventory[category]?.find(i => i.id === itemId) : null;
-                                            return (
-                                                <div key={category} className="bg-white/40 p-2 rounded border">
-                                                    <p className="font-bold">{categories[category]?.title}:</p>
-                                                    <p className="text-gray-600">
-                                                        {item ? item.name : 'Не экипировано'}
-                                                    </p>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="h-full overflow-y-auto">
-                                <div className="flex justify-center items-center mb-4">
-                                    <h2 className="text-xl font-bold text-gray-800">
-                                        {categories[selectedCategory]?.title}
-                                    </h2>
-                                </div>
-                                
-                                {inventory[selectedCategory]?.length > 0 ? (
-                                    <div className="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto">
-                                        {inventory[selectedCategory].map((item) => (
-                                            <div 
-                                                key={item.id} 
-                                                className={`bg-white/40 rounded-lg p-3 shadow border-2 ${
-                                                    item.equipped ? 'border-green-500 bg-green-100/40' : 'border-black'
-                                                }`}
-                                            >
-                                                <div className="flex items-start gap-3">
-                                                    <div className="w-16 h-16 border-2 rounded flex items-center justify-center flex-shrink-0">
-                                                        <img 
-                                                            src={item.image} 
-                                                            alt={item.name}
-                                                            className="w-14 h-14 object-contain"
-                                                        />
-                                                    </div>
-                                                    
-                                                    <div className="flex-1 min-w-0">
-                                                        <h3 className="font-bold text-gray-800 text-sm mb-1">
-                                                            {item.name}
-                                                            {item.equipped && (
-                                                                <span className="ml-2 text-green-600 text-xs">✓ Экипировано</span>
-                                                            )}
-                                                        </h3>
-                                                        <p className="text-xs text-gray-600 mb-2">
-                                                            {item.description}
-                                                        </p>
-                                                        
-                                                        <div className="flex items-center justify-between text-xs mb-2">
-                                                            <div className="bg-yellow-100 font-bold px-2 py-1 rounded text-yellow-800">
-                                                                🐟 +{item.rareChance}% шанс
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <button 
-                                                            onClick={() => item.equipped ? 
-                                                                handleUnequipItem(item, selectedCategory) : 
-                                                                handleEquipItem(item, selectedCategory)
-                                                            }
-                                                            className={`w-full py-1 px-2 rounded text-xs font-semibold ${
-                                                                item.equipped 
-                                                                    ? 'bg-red-500 hover:bg-red-600 text-white' 
-                                                                    : 'bg-green-500 hover:bg-green-600 text-white'
-                                                            }`}
-                                                        >
-                                                            {item.equipped ? 'Снять' : 'Экипировать'}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center justify-center h-64">
-                                        <p className="text-gray-600 text-lg">В этой категории пока нет предметов</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                    <div className="flex flex-col gap-1">
+                      <p className="text-lg font-semibold">{item.name}</p>
+                      <p className="text-xs text-sky-200">Бонус к редкой рыбе: +{item.rareChance}%</p>
                     </div>
+                  </div>
+
+                  <p className="flex-1 text-sm text-sky-100">{item.description}</p>
+
+                  <div className="flex flex-col gap-2">
+                    {item.isOwned ? (
+                      <button
+                        onClick={() => handleEquip(selectedCategory.id, item.id, item.isOwned)}
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                          item.isEquipped
+                            ? 'bg-green-500 text-gray-900 hover:bg-green-400'
+                            : 'bg-blue-500 text-gray-900 hover:bg-blue-400'
+                        }`}
+                      >
+                        {item.isEquipped ? 'Экипировано' : 'Экипировать'}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => navigate('/shop')}
+                        className="rounded-full bg-white/20 px-4 py-2 text-sm font-semibold transition hover:bg-white/30"
+                      >
+                        Купить в магазине
+                      </button>
+                    )}
+                  </div>
                 </div>
+              ))}
             </div>
+          </section>
         </div>
-    );
+      </div>
+    </MenuShell>
+  );
 }

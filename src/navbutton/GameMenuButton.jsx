@@ -10,7 +10,7 @@ export function GameMenuButton(){
         <div className="absolute bottom-6 right-6 z-30 flex gap-6">
             <button
                 type="button"
-                onClick={() => navigate('/game')}
+                onClick={() => navigate('/gamemenu')}
                 className="relative flex items-center justify-start"
                 aria-label="Перейти в игру"
             >

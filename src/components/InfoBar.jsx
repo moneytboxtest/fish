@@ -5,13 +5,19 @@ export function InfoBar() {
 
   return (
     <>
-      <div className="fixed inset-0 -z-30 overflow-hidden">
-        <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+      <div
+        className="pointer-events-none fixed inset-0 -z-30 overflow-hidden"
+        aria-hidden
+      >
+        <video autoPlay loop muted playsInline className="h-full w-full object-cover">
           <source src="/video/mbg.mp4" type="video/mp4" />
         </video>
       </div>
 
-      <div className="fixed inset-0 -z-20 bg-slate-950/60 backdrop-blur-sm" aria-hidden />
+      <div
+        className="pointer-events-none fixed inset-0 -z-20 bg-slate-950/55 backdrop-blur"
+        aria-hidden
+      />
 
       <div className="fixed top-3 left-3 z-30 flex items-center gap-2 rounded-r-2xl bg-blue-900/90 px-3 py-2 shadow-lg">
         <div className="border-2 border-white rounded-full p-1.5 bg-blue-500/40">

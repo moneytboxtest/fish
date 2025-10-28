@@ -67,16 +67,16 @@ export function MainMenu(){
     };
 
     return (
-        <div className="relative">
+        <div className="relative min-h-screen w-full overflow-hidden">
             <InfoBar />
             <GameMenuButton />
             <RightMenuButton />
             <LeftMenuButton />
             <SaleButton />
-            
+
             {/* Кнопка чата */}
-            <div className="absolute bottom-5 left-40 z-10">
-                <div 
+            <div className="absolute bottom-8 left-1/2 z-40 -translate-x-1/2">
+                <div
                     className="relative flex flex-col items-center cursor-pointer"
                     onClick={() => setShowChat(!showChat)}
                 >
@@ -92,10 +92,10 @@ export function MainMenu(){
 
             {/* Окно чата */}
             {showChat && (
-                <div className="absolute top-20 right-20 z-20">
+                <div className="absolute top-24 right-16 z-50">
                     <div className="relative">
-                        <img src="43.png" width={650} alt="chat window" />
-                        
+                        <img src="43.png" width={650} alt="chat window" className="drop-shadow-2xl" />
+
                         <div className="absolute top-12 left-8 right-8 bottom-12">
                             <div className="h-full flex flex-col">
                                 {/* Заголовок чата */}

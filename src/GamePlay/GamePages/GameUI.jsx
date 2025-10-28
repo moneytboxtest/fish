@@ -86,6 +86,7 @@ export function GameUi() {
     tutorialSeen,
     markTutorialSeen,
     balance,
+    recordCatchForTournaments,
   } = useGame();
 
   const location = selectedLocationId ? locationsMap[selectedLocationId] : null;
@@ -181,6 +182,11 @@ export function GameUi() {
     }
 
     setCaughtFish(result);
+    recordCatchForTournaments({
+      fishId: result.id,
+      rarity: result.rarity,
+      weight: result.weight,
+    });
     setShowCatchModal(true);
     setIsRodCast(false);
     setIsBiting(false);

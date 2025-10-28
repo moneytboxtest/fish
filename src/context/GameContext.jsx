@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
+import { tournamentTaskMap, tournamentTasksByTournament } from '../data/tournaments.js';
 
 const STORAGE_KEY = 'fishing-game-state-v1';
 
@@ -7,6 +8,8 @@ const defaultState = {
   ownedEquipment: [],
   selectedLocationId: null,
   tutorialSeen: false,
+  joinedTournaments: [],
+  tournamentTaskProgress: {},
 };
 
 function initialiseState() {
@@ -54,6 +57,62 @@ function gameReducer(state, action) {
     case 'MARK_TUTORIAL': {
       return { ...state, tutorialSeen: true };
     }
+    case 'JOIN_TOURNAMENT': {
+      if (state.joinedTournaments.includes(action.tournamentId)) {
+        return state;
+      }
+
+      const taskProgress = { ...state.tournamentTaskProgress };
+      (action.taskIds ?? []).forEach(taskId => {
+        if (!taskProgress[taskId]) {
+          taskProgress[taskId] = { progress: 0, claimed: false };
+        }
+      });
+
+      return {
+        ...state,
+        joinedTournaments: [...state.joinedTournaments, action.tournamentId],
+        tournamentTaskProgress: taskProgress,
+      };
+    }
+    case 'ADVANCE_TOURNAMENT_TASK': {
+      const task = tournamentTaskMap[action.taskId];
+      if (!task) {
+        return state;
+      }
+
+      const current = state.tournamentTaskProgress[action.taskId] ?? {
+        progress: 0,
+        claimed: false,
+      };
+
+      const nextProgress = Math.min(task.goal, current.progress + (action.amount ?? 1));
+      if (nextProgress === current.progress) {
+        return state;
+      }
+
+      return {
+        ...state,
+        tournamentTaskProgress: {
+          ...state.tournamentTaskProgress,
+          [action.taskId]: { ...current, progress: nextProgress },
+        },
+      };
+    }
+    case 'CLAIM_TOURNAMENT_TASK': {
+      const current = state.tournamentTaskProgress[action.taskId];
+      if (!current || current.claimed !== false) {
+        return state;
+      }
+
+      return {
+        ...state,
+        tournamentTaskProgress: {
+          ...state.tournamentTaskProgress,
+          [action.taskId]: { ...current, claimed: true },
+        },
+      };
+    }
     case 'RESET_STATE': {
       return { ...defaultState };
     }
@@ -80,6 +139,37 @@ export function GameProvider({ children }) {
       0,
     );
 
+    const recordCatchForTournaments = catchInfo => {
+      const info = catchInfo ?? {};
+      state.joinedTournaments.forEach(tournamentId => {
+        const taskIds = tournamentTasksByTournament[tournamentId] ?? [];
+        taskIds.forEach(taskId => {
+          const task = tournamentTaskMap[taskId];
+          if (!task) {
+            return;
+          }
+
+          switch (task.type) {
+            case 'catch_total':
+              dispatch({ type: 'ADVANCE_TOURNAMENT_TASK', taskId, amount: 1 });
+              break;
+            case 'catch_weight':
+              if (info.weight >= (task.minWeight ?? 0)) {
+                dispatch({ type: 'ADVANCE_TOURNAMENT_TASK', taskId, amount: 1 });
+              }
+              break;
+            case 'catch_rarity':
+              if ((task.rarities ?? []).includes(info.rarity)) {
+                dispatch({ type: 'ADVANCE_TOURNAMENT_TASK', taskId, amount: 1 });
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      });
+    };
+
     return {
       ...state,
       totalRareChance,
@@ -89,6 +179,12 @@ export function GameProvider({ children }) {
       setLocation: locationId => dispatch({ type: 'SET_LOCATION', locationId }),
       markTutorialSeen: () => dispatch({ type: 'MARK_TUTORIAL' }),
       resetState: () => dispatch({ type: 'RESET_STATE' }),
+      joinTournament: (tournamentId, taskIds) =>
+        dispatch({ type: 'JOIN_TOURNAMENT', tournamentId, taskIds }),
+      advanceTournamentTask: (taskId, amount = 1) =>
+        dispatch({ type: 'ADVANCE_TOURNAMENT_TASK', taskId, amount }),
+      claimTournamentTask: taskId => dispatch({ type: 'CLAIM_TOURNAMENT_TASK', taskId }),
+      recordCatchForTournaments,
     };
   }, [state]);
 

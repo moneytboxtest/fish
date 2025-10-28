@@ -42,22 +42,24 @@ export function ShopMenu() {
   };
 
   return (
-    <div className="relative min-h-screen">
-      <div className="relative z-10">
-        <InfoBar />
-      </div>
+    <div className="relative min-h-screen overflow-hidden">
+      <InfoBar />
+      <div
+        className="absolute inset-0 -z-20 bg-cover bg-center opacity-40"
+        style={{ backgroundImage: "url('/background/mb.jpg')" }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 -z-10 bg-slate-950/75 backdrop-blur" aria-hidden />
 
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm z-0 pointer-events-none" />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-10 flex flex-col gap-8">
-        <div className="flex justify-between items-center text-white">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32 pb-12 flex flex-col gap-8">
+        <div className="flex flex-col gap-4 text-white sm:flex-row sm:items-center sm:justify-between">
           <button
             onClick={() => navigate('/')}
-            className="bg-blue-900/80 hover:bg-blue-800 transition rounded-full px-4 py-2 text-sm font-semibold"
+            className="self-start bg-blue-900/80 hover:bg-blue-800 transition rounded-full px-4 py-2 text-sm font-semibold"
           >
             ← На базу
           </button>
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <p className="text-sm text-sky-200">Баланс</p>
             <p className="text-2xl font-bold">{balance.toLocaleString('ru-RU')} ₽</p>
           </div>
@@ -77,7 +79,7 @@ export function ShopMenu() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 pb-8">
           <aside className="bg-white/10 border border-white/20 rounded-3xl p-4 text-white flex flex-col gap-3">
             {shopCategories.map(category => (
               <button

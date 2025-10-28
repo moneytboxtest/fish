@@ -1,128 +1,120 @@
-import { useNavigate } from "react-router-dom"
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MenuShell } from '../components/MenuShell.jsx';
 
-export function QuestSeason(){
-    const navigate = useNavigate();
-    return (
+const seasonalTabs = [
+  { id: 'daily', label: 'Ежедневные', route: '/quickquest' },
+  { id: 'weekly', label: 'Еженедельные', route: '/quickquest' },
+  { id: 'seasonal', label: 'Сезонные', route: '/questseason' },
+];
 
-        <div className="relative">
-        <img 
-        className="h-full"
-        src="background/mbg.jpg" />
-        
-        <button 
-        onClick={() => navigate('/')}
-        className="absolute bottom-2 left-4 rounded-4xl bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-12 h-12">
-                    {/* Иконка стрелочки */}
-        </button>
-        <button className="absolute rounded-sm top-1 right-1 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11">1000 P</button>
-        <button 
-        onClick={() => navigate('/userset')}
-        className="flex rounded-sm justify-start items-center absolute top-1 left-1 gap-2 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-50 h-11">
-            <img
-                className="pl-2"
-                src="vite.svg" 
-                width={40}
-                height={40}
-                
-                />
-                <p className="">Player #200</p>
-        </button>
-        <div className="absolute flex flex-col gap-2 rounded-sm top-16 left-6">
-            <button 
-            onClick={() => navigate('/quickquest')}
-            className=" bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11">Ежедневные</button>
-            <button 
-            onClick={() => navigate('/questned')}
-            className=" bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11">Еженедельные</button>
-            <button className=" bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-40 h-11 border-2">Сезонные</button>
+const seasonalQuests = [
+  {
+    id: 1,
+    title: 'Зимний марафон',
+    progress: 10,
+    goal: 90,
+    reward: '500 руб + ящик наживки',
+  },
+  {
+    id: 2,
+    title: 'Полярный трофей',
+    progress: 1,
+    goal: 3,
+    reward: 'Редкая удочка',
+  },
+  {
+    id: 3,
+    title: 'Морозное соревнование',
+    progress: 25,
+    goal: 50,
+    reward: '300 руб + снегомобиль',
+  },
+  {
+    id: 4,
+    title: 'Ледяная коллекция',
+    progress: 8,
+    goal: 12,
+    reward: 'Карта редких мест',
+  },
+  {
+    id: 5,
+    title: 'Снежный эксперт',
+    progress: 0,
+    goal: 5,
+    reward: 'Премиальные крючки',
+  },
+];
+
+export function QuestSeason() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('seasonal');
+
+  return (
+    <MenuShell>
+      <div className="flex flex-col gap-8 text-white">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="self-start rounded-full bg-blue-900/80 px-4 py-2 text-sm font-semibold transition hover:bg-blue-800"
+          >
+            ← На базу
+          </button>
+          <div className="text-left sm:text-right">
+            <p className="text-sky-200 text-sm">Соревнуйтесь за сезонные призы</p>
+            <h1 className="text-3xl font-bold">Сезонные квесты</h1>
+          </div>
+        </header>
+
+        <div className="flex flex-wrap gap-3">
+          {seasonalTabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id);
+                if (tab.route !== '/questseason') {
+                  navigate(tab.route);
+                }
+              }}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+                tab.id === activeTab ? 'bg-green-500 text-gray-900' : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        <div className="absolute rounded-sm top-16 left-60 bg-gradient-to-r from-[#D0D5DB] to-[#FCFCFC]  w-100 h-63 items-top p-2 overflow-auto">
-            <div className="flex justify-between items-center font-semibold border-b-1 p-1">
-                <div className="w-60 min-w-0 text-left">
-                <p className="truncate">Выловить рыбу </p>
-                </div>
-                <div className="w-20 text-center"> 
-                <p>10/900</p>
-                </div>
-                <div className="w-20 text-right">
-                <p className="border-1 p-1 rounded-sm ">Забрать</p>
-                </div>
-            </div>
-            <div className="flex justify-between items-center font-semibold border-b-1 p-1">
-                <div className="w-60 min-w-0 text-left">
-                <p className="truncate">Ремонт снастей </p>
-                </div>
-                <div className="w-20 text-center"> 
-                <p>1/300</p>
-                </div>
-                <div className="w-20 text-right">
-                <p className="border-1 p-1 rounded-sm ">Забрать</p>
-                </div>
-            </div>
-            <div className="flex justify-between items-center font-semibold border-b-1 p-1">
-                <div className="w-60 min-w-0 text-left">
-                <p className="truncate">Учавствовать в турнире </p>
-                </div>
-                <div className="w-20 text-center"> 
-                <p>1/150</p>
-                </div>
-                <div className="w-20 text-right">
-                <p className="border-1 p-1 rounded-sm ">Забрать</p>
-                </div>
-            </div>
-            <div className="flex justify-between items-center font-semibold border-b-1 p-1">
-                <div className="w-60 min-w-0 text-left">
-                <p className="truncate">Наполнить садок </p>
-                </div>
-                <div className="w-20 text-center"> 
-                <p>11/900</p>
-                </div>
-                <div className="w-20 text-right">
-                <p className="border-1 p-1 rounded-sm ">Забрать</p>
-                </div>
-            </div>
-            <div className="flex justify-between items-center font-semibold border-b-1 p-1">
-                <div className="w-60 min-w-0 text-left">
-                <p className="truncate">Поделиться уловом</p>
-                </div>
-                <div className="w-20 text-center"> 
-                <p>1/150</p>
-                </div>
-                <div className="w-20 text-right">
-                <p className="border-1 p-1 rounded-sm ">Забрать</p>
-                </div>
-            </div>
-            <div className="flex justify-between items-center font-semibold border-b-1 p-1">
-                <div className="w-60 min-w-0 text-left">
-                <p className="truncate">Совершить покупку </p>
-                </div>
-                <div className="w-20 text-center"> 
-                <p>1/50</p>
-                </div>
-                <div className="w-20 text-right">
-                <p className="border-1 p-1 rounded-sm ">Забрать</p>
-                </div>
-            </div>
-            <div className="flex justify-between items-center font-semibold border-b-1 p-1">
-                <div className="w-60 min-w-0 text-left">
-                <p className="truncate">Совершить покупку </p>
-                </div>
-                <div className="w-20 text-center"> 
-                <p>1/450</p>
-                </div>
-                <div className="w-20 text-right">
-                <p className="border-1 p-1 rounded-sm ">Забрать</p>
-                </div>
-            </div>
-            
-        </div>
+        <section className="rounded-3xl border border-white/20 bg-white/10 p-6">
+          <div className="grid grid-cols-1 gap-4">
+            {seasonalQuests.map(quest => {
+              const progressPercentage = Math.min(100, Math.round((quest.progress / quest.goal) * 100));
 
-        </div>
-        
-        
-        
-
-      
-    )
+              return (
+                <div
+                  key={quest.id}
+                  className="flex flex-col gap-3 rounded-3xl border border-white/20 bg-black/30 p-4 shadow-lg md:flex-row md:items-center md:justify-between"
+                >
+                  <div>
+                    <p className="text-lg font-semibold">{quest.title}</p>
+                    <p className="text-sm text-sky-100">Прогресс: {quest.progress}/{quest.goal}</p>
+                    <div className="mt-2 h-2 w-full rounded-full bg-white/15 md:w-72">
+                      <div className="h-full rounded-full bg-green-400" style={{ width: `${progressPercentage}%` }} />
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-sky-200">Награда</p>
+                    <p className="text-base font-semibold text-amber-300">{quest.reward}</p>
+                    <button className="mt-3 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/30">
+                      Забрать
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+    </MenuShell>
+  );
 }

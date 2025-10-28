@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { InfoBar } from '../components/InfoBar.jsx';
+import { MenuShell } from '../components/MenuShell.jsx';
 import { useGame } from '../context/GameContext.jsx';
 import { shopCategories } from '../data/shopItems.js';
 
@@ -42,16 +42,8 @@ export function ShopMenu() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <InfoBar />
-      <div
-        className="absolute inset-0 -z-20 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url('/background/mb.jpg')" }}
-        aria-hidden
-      />
-      <div className="absolute inset-0 -z-10 bg-slate-950/75 backdrop-blur" aria-hidden />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32 pb-12 flex flex-col gap-8">
+    <MenuShell>
+      <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4 text-white sm:flex-row sm:items-center sm:justify-between">
           <button
             onClick={() => navigate('/')}
@@ -79,7 +71,7 @@ export function ShopMenu() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 pb-8 text-white">
           <aside className="bg-white/10 border border-white/20 rounded-3xl p-4 text-white flex flex-col gap-3">
             {shopCategories.map(category => (
               <button
@@ -147,6 +139,6 @@ export function ShopMenu() {
           </section>
         </div>
       </div>
-    </div>
+    </MenuShell>
   );
 }

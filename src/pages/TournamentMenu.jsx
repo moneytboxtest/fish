@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { InfoBar } from '../components/InfoBar.jsx';
+import { MenuShell } from '../components/MenuShell.jsx';
 import { useGame } from '../context/GameContext.jsx';
 import {
   tournaments,
@@ -110,12 +110,8 @@ export function TournamentMenu() {
   }, [joinedTournaments, tournamentTaskProgress]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <InfoBar />
-      <div className="absolute inset-0 -z-20 bg-cover bg-center" style={{ backgroundImage: "url('/background/mb.jpg')" }} aria-hidden />
-      <div className="absolute inset-0 -z-10 bg-slate-950/75 backdrop-blur" aria-hidden />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32 pb-12 flex flex-col gap-6 text-white">
+    <MenuShell>
+      <div className="flex flex-col gap-6 text-white">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-3">
             <button
@@ -354,6 +350,6 @@ export function TournamentMenu() {
           </div>
         )}
       </div>
-    </div>
+    </MenuShell>
   );
 }

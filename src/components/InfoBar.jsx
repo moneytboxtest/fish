@@ -1,36 +1,32 @@
+import { useGame } from '../context/GameContext.jsx';
+
 export function InfoBar() {
+  const { balance } = useGame();
 
-    return (
-        <div className="relative App">
-        <video autoPlay loop>
-        <source src="/video/mbg.mp4" type="video/mp4" />
+  return (
+    <>
+      <div className="fixed inset-0 -z-30 overflow-hidden">
+        <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+          <source src="/video/mbg.mp4" type="video/mp4" />
         </video>
+      </div>
 
-        <div className="flex absolute top-0.5 left-0 pl-2 justify-start items-center rounded-r-2xl gap-2  bg-blue-900/90 w-40 h-10">
-            <div className="border-2 border-white rounded-4xl p-[4px]">
-                <img 
-                src="vite.svg"
-                width={25}
-                height={25}/>
-            </div>
-            <div>
-                <p className="text-white font-bold">Player #200</p>
-            </div>
+      <div className="fixed inset-0 -z-20 bg-slate-950/60 backdrop-blur-sm" aria-hidden />
+
+      <div className="fixed top-3 left-3 z-30 flex items-center gap-2 rounded-r-2xl bg-blue-900/90 px-3 py-2 shadow-lg">
+        <div className="border-2 border-white rounded-full p-1.5 bg-blue-500/40">
+          <img src="vite.svg" width={32} height={32} alt="avatar" />
         </div>
-        
-        <button className="flex items-center justify-between text-white font-bold absolute top-0.5 right-0 pl-2 rounded-l-2xl gap-2  bg-blue-900/90 w-30 h-10">
-        <img 
-        className="flex"
-        src="иконки/6.png"
-        width={40}/>
-        <p className="pr-5">1000</p>
-        </button>
-        
-
-
-
-
-
+        <div className="flex flex-col leading-tight text-left">
+          <p className="text-white font-bold text-sm sm:text-base">Player #200</p>
+          <p className="text-sky-100 text-xs sm:text-sm">Готов к рыбалке</p>
         </div>
-    )
+      </div>
+
+      <div className="fixed top-3 right-3 z-30 flex items-center gap-2 rounded-l-2xl bg-blue-900/90 px-4 py-2 text-white shadow-lg">
+        <img className="h-9 w-9" src="иконки/6.png" alt="coins" />
+        <p className="text-sm sm:text-base font-bold">{balance.toLocaleString('ru-RU')} ₽</p>
+      </div>
+    </>
+  );
 }

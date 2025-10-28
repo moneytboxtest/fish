@@ -7,39 +7,46 @@ export function GameMenuButton(){
 
 
     return (
-        <div className="absolute bottom-1 right-1 flex gap-8">
-            <button 
-            onClick={() => navigate('/game')}
-            className="relative flex flex-row items-center">
-            <img 
-                className="object-cover"
-                src="background/but1.png"
-                width={180}
-                height={70}
+        <div className="absolute bottom-6 right-6 z-30 flex gap-6">
+            <button
+                type="button"
+                onClick={() => navigate('/game')}
+                className="relative flex items-center justify-start"
+                aria-label="Перейти в игру"
+            >
+                <img
+                    className="h-[70px] w-[180px] object-contain"
+                    src="background/but1.png"
+                    alt="Кнопка игры"
                 />
-            <img 
-            className="object-cover absolute bottom-[35%] left-2"
-            src="удочки/1.png" 
-            width={70}
-            />
-            <p className="absolute right-10 bottom-[65%] text-white text-[24px] font-bold">Игра</p>
-            
+                <img
+                    className="absolute left-3 bottom-1/3 h-12 w-12 object-contain"
+                    src="удочки/1.png"
+                    alt="Удочка"
+                />
+                <span className="absolute right-8 top-1/3 text-xl font-bold text-white drop-shadow-md">
+                    Игра
+                </span>
             </button>
-            <button 
-            onClick={() => navigate('/tourn')}
-            className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/but1.png"
-                width={180}
-                height={70}
+            <button
+                type="button"
+                onClick={() => navigate('/tourn')}
+                className="relative flex items-center justify-start"
+                aria-label="Перейти в турниры"
+            >
+                <img
+                    className="h-[70px] w-[180px] object-contain"
+                    src="background/but1.png"
+                    alt="Кнопка турниров"
                 />
-            <img 
-            className="object-cover absolute bottom-[35%] left-2"
-            src="иконки/7.png" 
-            width={40}
-            />
-            <p className="absolute right-10 bottom-[65%] text-white text-[24px] font-bold">Турниры</p>
+                <img
+                    className="absolute left-3 bottom-1/3 h-10 w-10 object-contain"
+                    src="иконки/7.png"
+                    alt="Кубок"
+                />
+                <span className="absolute right-6 top-1/3 text-xl font-bold text-white drop-shadow-md">
+                    Турниры
+                </span>
             </button>
         </div>
     )

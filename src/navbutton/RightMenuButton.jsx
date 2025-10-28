@@ -7,89 +7,66 @@ export function RightMenuButton(){
 
 
     return (
-       <div className="absolute bottom-30 grid grid-cols-1 right-1 gap-2 ">
-            <button 
-            onClick={() => navigate('/inventory')}
-            className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/boll.png"
-                width={90}
-                height={80}
+       <div className="absolute right-6 top-1/2 z-30 flex -translate-y-1/2 flex-col items-center gap-4">
+            <button
+                type="button"
+                onClick={() => navigate('/inventory')}
+                className="relative flex flex-col items-center"
+            >
+                <img
+                    className="h-20 w-20 object-contain"
+                    src="background/boll.png"
+                    alt="Фон кнопки"
                 />
-            <img 
-            className="absolute"
-            src="иконки/3.png"
-            width={70} />
-            <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Снаряжение</p>
+                <img
+                    className="absolute top-1/4 h-14 w-14 object-contain"
+                    src="иконки/3.png"
+                    alt="Снаряжение"
+                />
+                <span className="absolute bottom-2 text-xs font-semibold uppercase tracking-wide text-white">
+                    Снаряжение
+                </span>
             </button>
 
-            <button 
-            onClick={() => navigate ('/achievement')}
-            className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/boll.png"
-                width={90}
-                height={80}
+            <button
+                type="button"
+                onClick={() => navigate('/achievement')}
+                className="relative flex flex-col items-center"
+            >
+                <img
+                    className="h-20 w-20 object-contain"
+                    src="background/boll.png"
+                    alt="Фон кнопки"
                 />
-            <img 
-            className="absolute"
-            src="иконки/2.png"
-            width={70} />
-            <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Достижения</p>
+                <img
+                    className="absolute top-1/4 h-14 w-14 object-contain"
+                    src="иконки/2.png"
+                    alt="Достижения"
+                />
+                <span className="absolute bottom-2 text-xs font-semibold uppercase tracking-wide text-white">
+                    Достижения
+                </span>
             </button>
-            <button 
-            onClick={() => navigate('/inventory')}
-            className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/boll.png"
-                width={90}
-                height={80}
+
+            <button
+                type="button"
+                onClick={() => navigate('/inventory')}
+                className="relative flex flex-col items-center"
+            >
+                <img
+                    className="h-20 w-20 object-contain"
+                    src="background/boll.png"
+                    alt="Фон кнопки"
                 />
-            <img 
-            className="absolute"
-            src="иконки/4.png"
-            width={70} />
-            <p className="absolute bottom-[30%] text-white text-[14px] font-bold">Инвентарь</p>
+                <img
+                    className="absolute top-1/4 h-14 w-14 object-contain"
+                    src="иконки/4.png"
+                    alt="Инвентарь"
+                />
+                <span className="absolute bottom-2 text-xs font-semibold uppercase tracking-wide text-white">
+                    Инвентарь
+                </span>
             </button>
-            {/* <div className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/boll.png"
-                width={90}
-                height={80}
-                />
-            <p className="absolute bottom-[40%] text-white text-[24px] font-bold"></p>
-            </div>
-            <div className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/boll.png"
-                width={90}
-                height={80}
-                />
-            <p className="absolute bottom-[40%] text-white text-[24px] font-bold"></p>
-            </div>
-            <div className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/boll.png"
-                width={90}
-                height={80}
-                />
-            <p className="absolute bottom-[40%] text-white text-[24px] font-bold"></p>
-            </div>
-            <div className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/boll.png"
-                width={90}
-                height={80}
-                />
-            <p className="absolute bottom-[40%] text-white text-[24px] font-bold"></p>
-            </div> */}
         </div>
     )
 }

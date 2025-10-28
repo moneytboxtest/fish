@@ -7,67 +7,82 @@ export function LeftMenuButton(){
 
 
     return (
-        <div className="absolute top-30 left-3 flex flex-col gap-2">
-            <button 
-            onClick={() => navigate('/shop')}
-            className="relative flex flex-col items-center">
-            
-            <img 
-                className="object-cover"
-                src="background/box.png"
-                width={80}
-                height={80}
+        <div className="absolute left-6 top-1/2 z-30 flex -translate-y-1/2 flex-col gap-4">
+            <button
+                type="button"
+                onClick={() => navigate('/shop')}
+                className="relative flex flex-col items-center"
+            >
+                <img
+                    className="h-20 w-20 object-contain"
+                    src="background/box.png"
+                    alt="Фон кнопки"
                 />
-            <img 
-            className="absolute top-3"
-            src="иконки/9.png"
-            width={40} />
-            <p className="absolute bottom-5 text-black text-[16px] font-bold">Магазин</p>
+                <img
+                    className="absolute top-2 h-10 w-10 object-contain"
+                    src="иконки/9.png"
+                    alt="Магазин"
+                />
+                <span className="absolute bottom-2 text-xs font-semibold uppercase tracking-wide text-black">
+                    Магазин
+                </span>
             </button>
             <button
-            onClick={() => navigate('/sellmenu')}
-            className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/box.png"
-                width={80}
-                height={80}
+                type="button"
+                onClick={() => navigate('/sellmenu')}
+                className="relative flex flex-col items-center"
+            >
+                <img
+                    className="h-20 w-20 object-contain"
+                    src="background/box.png"
+                    alt="Фон кнопки"
                 />
-                <img 
-            className="absolute top-3"
-            src="иконки/8.png"
-            width={40} />
-            <p className="absolute bottom-5 text-black text-[16px] font-bold">Скупка</p>
+                <img
+                    className="absolute top-2 h-10 w-10 object-contain"
+                    src="иконки/8.png"
+                    alt="Скупка"
+                />
+                <span className="absolute bottom-2 text-xs font-semibold uppercase tracking-wide text-black">
+                    Скупка
+                </span>
             </button>
-            <button 
-            onClick={() => navigate('/quickquest')}
-            className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/box.png"
-                width={80}
-                height={80}
+            <button
+                type="button"
+                onClick={() => navigate('/quickquest')}
+                className="relative flex flex-col items-center"
+            >
+                <img
+                    className="h-20 w-20 object-contain"
+                    src="background/box.png"
+                    alt="Фон кнопки"
                 />
-                <img 
-            className="absolute top-5"
-            src="иконки/11.png"
-            width={40} />
-            <p className="absolute bottom-5 text-black text-[16px] font-bold">Квесты</p>
+                <img
+                    className="absolute top-4 h-10 w-10 object-contain"
+                    src="иконки/11.png"
+                    alt="Квесты"
+                />
+                <span className="absolute bottom-2 text-xs font-semibold uppercase tracking-wide text-black">
+                    Квесты
+                </span>
             </button>
-            <button 
-            onClick={() => navigate('/reward')}
-            className="relative flex flex-col items-center">
-            <img 
-                className="object-cover"
-                src="background/box.png"
-                width={80}
-                height={80}
+            <button
+                type="button"
+                onClick={() => navigate('/reward')}
+                className="relative flex flex-col items-center"
+            >
+                <img
+                    className="h-20 w-20 object-contain"
+                    src="background/box.png"
+                    alt="Фон кнопки"
                 />
-                <img 
-            className="absolute top-3"
-            src="иконки/10.png"
-            width={40} />
-            <p className="absolute bottom-5 text-black text-[16px] font-bold">Награды</p>
+                <img
+                    className="absolute top-2 h-10 w-10 object-contain"
+                    src="иконки/10.png"
+                    alt="Награды"
+                />
+                <span className="absolute bottom-2 text-xs font-semibold uppercase tracking-wide text-black">
+                    Награды
+                </span>
             </button>
         </div>
     )

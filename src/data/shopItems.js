@@ -1,0 +1,159 @@
+export const shopCategories = [
+  {
+    id: 'rods',
+    title: 'Удочки',
+    items: [
+      {
+        id: 'rod-wood',
+        name: 'Деревянная удочка',
+        price: 100,
+        image: 'удочки/1.png',
+        rareChance: 5,
+        description: 'Простая удочка для начинающих.',
+      },
+      {
+        id: 'rod-carbon',
+        name: 'Углепластиковая удочка',
+        price: 300,
+        image: 'удочки/2.png',
+        rareChance: 12,
+        description: 'Лёгкая удочка среднего класса.',
+      },
+      {
+        id: 'rod-pro',
+        name: 'Профессиональная удочка',
+        price: 800,
+        image: 'удочки/3.png',
+        rareChance: 25,
+        description: 'Выбор опытных рыбаков.',
+      },
+    ],
+  },
+  {
+    id: 'bait',
+    title: 'Наживки',
+    items: [
+      {
+        id: 'bait-worm',
+        name: 'Черви (10 шт.)',
+        price: 20,
+        image: 'наж/1.png',
+        rareChance: 3,
+        description: 'Универсальная наживка.',
+      },
+      {
+        id: 'bait-snail',
+        name: 'Улитки (15 шт.)',
+        price: 35,
+        image: 'наж/2.png',
+        rareChance: 6,
+        description: 'Любимая наживка хищника.',
+      },
+      {
+        id: 'bait-beetle',
+        name: 'Жук (5 шт.)',
+        price: 60,
+        image: 'наж/3.png',
+        rareChance: 10,
+        description: 'Премиальная наживка.',
+      },
+    ],
+  },
+  {
+    id: 'lines',
+    title: 'Лески',
+    items: [
+      {
+        id: 'line-basic',
+        name: 'Монофильная леска',
+        price: 50,
+        image: 'катушки/1.png',
+        rareChance: 2,
+        description: 'Стандартная леска.',
+      },
+      {
+        id: 'line-fluorocarbon',
+        name: 'Флюорокарбон',
+        price: 120,
+        image: 'катушки/2.png',
+        rareChance: 5,
+        description: 'Почти невидимая в воде.',
+      },
+      {
+        id: 'line-premium',
+        name: 'Плетёнка Premium',
+        price: 200,
+        image: 'катушки/3.png',
+        rareChance: 8,
+        description: 'Очень прочная леска.',
+      },
+    ],
+  },
+  {
+    id: 'hooks',
+    title: 'Крючки',
+    items: [
+      {
+        id: 'hook-6',
+        name: 'Крючки №6 (10 шт.)',
+        price: 15,
+        image: 'крючки/1.png',
+        rareChance: 2,
+        description: 'Для мелкой рыбы.',
+      },
+      {
+        id: 'hook-4',
+        name: 'Крючки №4 острые (8 шт.)',
+        price: 30,
+        image: 'крючки/2.png',
+        rareChance: 5,
+        description: 'Для средней рыбы.',
+      },
+      {
+        id: 'hook-triple',
+        name: 'Крючки №1 тройные (5 шт.)',
+        price: 45,
+        image: 'крючки/3.png',
+        rareChance: 9,
+        description: 'Для трофейной рыбы.',
+      },
+    ],
+  },
+  {
+    id: 'snowmobiles',
+    title: 'Снегоходы',
+    items: [
+      {
+        id: 'snow-basic',
+        name: 'Снегоход Basic',
+        price: 500,
+        image: 'снегоходы/1.png',
+        rareChance: 8,
+        description: 'Надёжный спутник по льду.',
+      },
+      {
+        id: 'snow-pro',
+        name: 'Снегоход Pro',
+        price: 1200,
+        image: 'снегоходы/2.png',
+        rareChance: 16,
+        description: 'Быстрый и манёвренный.',
+      },
+      {
+        id: 'snow-elite',
+        name: 'Снегоход Elite',
+        price: 2500,
+        image: 'снегоходы/3.png',
+        rareChance: 25,
+        description: 'Лучший транспорт для дальних выездов.',
+      },
+    ],
+  },
+];
+
+export const shopItemMap = shopCategories.reduce((map, category) => {
+  category.items.forEach(item => {
+    map[item.id] = { ...item, categoryId: category.id };
+  });
+  return map;
+}, {});
